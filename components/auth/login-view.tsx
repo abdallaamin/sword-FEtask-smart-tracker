@@ -22,7 +22,7 @@ export default function LoginView() {
             <div className="flex justify-center mb-2">
               <Sparkles className="h-10 w-10 text-primary" />
             </div>
-            <CardTitle className="text-3xl">Smart Habit Tracker</CardTitle>
+            <CardTitle className="text-3xl">Sword Smart Habit Tracker</CardTitle>
             <CardDescription>
               Build better habits and reach your goals
             </CardDescription>

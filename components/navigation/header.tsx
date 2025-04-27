@@ -34,7 +34,7 @@ export default function Header({ toggleSidebar }: HeaderProps) {
       
       <div className="flex flex-1 items-center justify-between">
         <div className="flex items-center gap-2">
-          <h1 className="font-semibold md:text-lg hidden md:block">Smart Habit Tracker</h1>
+          <h1 className="font-semibold md:text-lg hidden md:block">Sword Smart Habit Tracker</h1>
         </div>
         
         <div className="flex items-center gap-4">

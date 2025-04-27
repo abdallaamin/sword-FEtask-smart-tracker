@@ -24,6 +24,7 @@ import { DivideIcon } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
 import { Pencil, Trash, Trophy } from 'lucide-react';
 import { motion } from 'framer-motion';
+import HabitModal from './habit-modal';
 
 interface HabitsListProps {
   habits: HabitWithLogs[];
@@ -35,6 +36,8 @@ export default function HabitsList({ habits, compact = false }: HabitsListProps)
   const { toggleHabitCompletion, removeHabit, getStreak } = useHabitStore();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [habitToDelete, setHabitToDelete] = useState<string | null>(null);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [habitToEdit, setHabitToEdit] = useState<HabitWithLogs | null>(null);
   
   const confirmDelete = (habitId: string) => {
     setHabitToDelete(habitId);
@@ -47,6 +50,11 @@ export default function HabitsList({ habits, compact = false }: HabitsListProps)
       setDeleteDialogOpen(false);
       setHabitToDelete(null);
     }
+  };
+
+  const handleEdit = (habit: HabitWithLogs) => {
+    setHabitToEdit(habit);
+    setEditModalOpen(true);
   };
   
   const handleToggle = (habitId: string, date: string, completed: boolean) => {
@@ -104,10 +112,12 @@ export default function HabitsList({ habits, compact = false }: HabitsListProps)
                   
                   {!compact && (
                     <div className="flex space-x-1 ml-2">
-                      <Button variant="ghost" size="icon" asChild>
-                        <Link href={`/dashboard/habits/${habit.id}/edit`}>
-                          <Pencil className="h-4 w-4" />
-                        </Link>
+                      <Button 
+                        variant="ghost" 
+                        size="icon"
+                        onClick={() => handleEdit(habit)}
+                      >
+                        <Pencil className="h-4 w-4" />
                       </Button>
                       <Button 
                         variant="ghost" 
@@ -178,6 +188,16 @@ export default function HabitsList({ habits, compact = false }: HabitsListProps)
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      
+      {/* Edit Habit Modal */}
+      {habitToEdit && (
+        <HabitModal
+          trigger={<div style={{ display: 'none' }}></div>}
+          habitData={habitToEdit}
+          open={editModalOpen}
+          onOpenChange={setEditModalOpen}
+        />
+      )}
     </div>
   );
 }

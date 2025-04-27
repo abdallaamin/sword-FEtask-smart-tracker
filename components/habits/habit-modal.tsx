@@ -9,19 +9,22 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import HabitForm from "./habit-form";
+import { Habit } from "@/types";
 
 export interface HabitModalProps {
   trigger: ReactNode;
   title?: string;
   open?: boolean; 
   onOpenChange?: (open: boolean) => void;
+  habitData?: Habit;
 }
 
 export default function HabitModal({ 
   trigger, 
   title = "Create new habit",
   open: controlledOpen,
-  onOpenChange: setControlledOpen 
+  onOpenChange: setControlledOpen,
+  habitData
 }: HabitModalProps) {
   // Use internal state if no controlled state is provided
   const [internalOpen, setInternalOpen] = useState(false);
@@ -43,9 +46,13 @@ export default function HabitModal({
         autoFocus={false}
       >
         <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
+          <DialogTitle>{habitData ? `Edit ${habitData.name}` : title}</DialogTitle>
         </DialogHeader>
-        <HabitForm isModal onComplete={handleComplete} />
+        <HabitForm 
+          isModal 
+          onComplete={handleComplete} 
+          habitData={habitData} 
+        />
       </DialogContent>
     </Dialog>
   );
