@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -66,6 +66,28 @@ export default function HabitForm({ habitData, onComplete, isModal = false }: Ha
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const availableTags = getAvailableTags();
+  const nameInputRef = useRef<HTMLInputElement>(null);
+  
+  // Focus the name input field when modal opens
+  useEffect(() => {
+    if (isModal && nameInputRef.current) {
+      // Delay focus to ensure the modal is fully rendered
+      const timer = setTimeout(() => {
+        nameInputRef.current?.focus();
+      }, 100);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [isModal]);
+  
+  // Add helper function for maintaining focus
+  const maintainFocus = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    // Prevent any default behavior that might steal focus
+    e.preventDefault();
+    e.stopPropagation();
+    // Ensure the current target maintains focus
+    e.currentTarget.focus();
+  };
   
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -132,9 +154,24 @@ export default function HabitForm({ habitData, onComplete, isModal = false }: Ha
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Habit Name</FormLabel>
+              <FormLabel htmlFor="habit-name">Habit Name</FormLabel>
               <FormControl>
-                <Input placeholder="Drink water" {...field} />
+                <Input 
+                  id="habit-name"
+                  placeholder="Drink water" 
+                  {...field} 
+                  ref={nameInputRef}
+                  autoComplete="off"
+                  className="focus:z-10 focus-visible:ring-offset-0"
+                  onFocus={maintainFocus}
+                  onClick={(e) => e.stopPropagation()}
+                  onKeyDown={(e) => e.stopPropagation()}
+                  onChange={(e) => {
+                    field.onChange(e);
+                    // Ensure we maintain focus after value changes
+                    e.currentTarget.focus();
+                  }}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -146,12 +183,22 @@ export default function HabitForm({ habitData, onComplete, isModal = false }: Ha
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Description (optional)</FormLabel>
+              <FormLabel htmlFor="habit-description">Description (optional)</FormLabel>
               <FormControl>
                 <Textarea 
+                  id="habit-description"
                   placeholder="Drink 8 glasses of water daily" 
-                  className="resize-none"
+                  className="resize-none focus:z-10 focus-visible:ring-offset-0"
+                  autoComplete="off"
                   {...field} 
+                  onFocus={maintainFocus}
+                  onClick={(e) => e.stopPropagation()}
+                  onKeyDown={(e) => e.stopPropagation()}
+                  onChange={(e) => {
+                    field.onChange(e);
+                    // Ensure we maintain focus after value changes
+                    e.currentTarget.focus();
+                  }}
                 />
               </FormControl>
               <FormMessage />

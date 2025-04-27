@@ -116,6 +116,13 @@ yarn build
 yarn start
 ```
 
+## Env Variables
+ ```
+  NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your_nextauth_secret_key_here
+   ```
+
+
 ## Project Structure
 
 ```
